@@ -206,5 +206,17 @@ class CausalFaker:
         Give a list of equations representing the graphs.
         """
 
+        for n in self.nodes:
+            # Get a list of tuples, first is the v
+            parents = self.adj_inv[n]
+            if len(parents) == 0:
+                right_side = 'N(0, 1)'
+            else:
+                right_side = ' + '.join(['{:.3f}*x_{}'.format(self.weights[i, n], i)
+                                         for i in parents])
+            
+            right_side.replace('+ -', '-')
+            print('x_{} = {}'.format(n, right_side))
+
 
 
