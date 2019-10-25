@@ -200,3 +200,11 @@ class CausalFaker:
             raise ImportError
     
         return nx.draw_networkx(self.networkx)
+
+    def pretty_print_equation(self):
+        """
+        Give a list of equations representing the graphs.
+        """
+
+
+
