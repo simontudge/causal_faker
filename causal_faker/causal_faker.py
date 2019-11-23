@@ -128,11 +128,15 @@ class CausalFaker:
         
         return [self.get_values() for _ in range(n)]
     
-    def get_df(self, n):
+    def get_df(self, n, named_cols=False):
         """
         Get n examples, and return as a pandas dataframe, the columns
         of which are the different variables, the rows are the different
         trials.
+        
+        named_cols: Bool, False
+            If true columns will have names like x_0, x_1 instead of
+            0, 1.
         """
         try:
             import pandas as pd
@@ -140,7 +144,10 @@ class CausalFaker:
             print('Install pandas')
             raise ImportError
 
-        return pd.DataFrame(self.get_n(n))
+        df = pd.DataFrame(self.get_n(n))
+        if named_cols:
+            df.columns = ['x_{}'.format(c) for c in df.columns]
+        return df
 
     @property
     def depth(self):
@@ -217,6 +224,3 @@ class CausalFaker:
             
             right_side.replace('+ -', '-')
             print('x_{} = {}'.format(n, right_side))
-
-
-
