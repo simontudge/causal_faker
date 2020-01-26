@@ -24,7 +24,7 @@ class CausalFaker:
     
     """
     
-    def __init__(self, weights):
+    def __init__(self, weights, binary=False):
         """
         Inputs
         ------
@@ -32,6 +32,10 @@ class CausalFaker:
         weights: dict (2-tuple): set(int)
         Specify each edge of the graph and its weight.
         See example use below
+        
+        binary: bool, False
+            If true random variables are binary with p=0.5
+
         
         Example Use
         -----------
@@ -53,6 +57,8 @@ class CausalFaker:
         """
 
         self.weights = weights
+
+        self.binary = binary
         
         # Set the number of nodes in total 
         self.nodes = set()
@@ -97,7 +103,10 @@ class CausalFaker:
         self.node_levels = node_levels
 
     def _random(self):
-        return np.random.normal(0, 1)
+        if self.binary:
+            return int(np.random.random() < 0.5)
+        else:
+            return np.random.normal(0, 1)
 
     def get_values(self):
         """
@@ -217,7 +226,10 @@ class CausalFaker:
             # Get a list of tuples, first is the v
             parents = self.adj_inv[n]
             if len(parents) == 0:
-                right_side = 'N(0, 1)'
+                if self.binary:
+                    right_side = '{0,1}'
+                else:
+                    right_side = 'N(0, 1)'
             else:
                 right_side = ' + '.join(['{:.3f}*x_{}'.format(self.weights[i, n], i)
                                          for i in parents])
